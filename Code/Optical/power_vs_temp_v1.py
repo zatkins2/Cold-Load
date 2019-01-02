@@ -88,7 +88,7 @@ ax[1].grid()
 
 ax[1].set_xlabel("$T$ [K]")
 ax[1].set_xlim(left = 0, right = 25)
-fig.savefig("/Users/zatkins/Desktop/2018/SO/Cold Load/Figures/Optical/Power_Abs", bbox_inches = "tight")
+fig.savefig("../../Figures/Optical/Power_Abs", bbox_inches = "tight")
 
 #figure 2, ratio of act power to linear power
 fig, ax = plt.subplots(figsize = (8, 6))
@@ -102,7 +102,7 @@ ax.set_ylabel("[a.u.]")
 ax.grid()
 ax.set_xlim(left = 0, right = 25)
 
-fig.savefig("/Users/zatkins/Desktop/2018/SO/Cold Load/Figures/Optical/Power_Rel", bbox_inches = "tight")
+fig.savefig("../../Figures/Optical/Power_Rel", bbox_inches = "tight")
 
 
 
