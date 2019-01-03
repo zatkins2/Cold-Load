@@ -5,6 +5,11 @@ Created on Mon Dec 17 22:38:27 2018
 @author: zatkins
 """
 
+import time
+start = time.perf_counter()
+
+import os
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.path as path
@@ -22,7 +27,8 @@ max_r = 100.0                #radii in mm
 H = 45.0                     #detector-load normal distance in mm
 
 #define parameters
-N = int(1e5)
+N = int(1e6)
+N_sims = int(1e3)
 domains = ["omega", "theta"]
 
 freq, phi = ["150", "0"]
@@ -38,7 +44,7 @@ fileout = "../../Figures/Optical/Load_v2/f_sky/"
 
 ##
 #data structures
-rs = np.linspace(0, max_r, int(max_r + 1))
+rs = np.linspace(0, max_r, 25)
 
 out_circ = np.zeros((len(domains), len(rs)))
 sigma_out_circ = np.zeros((len(domains), len(rs)))
@@ -51,6 +57,9 @@ planar_points = np.zeros((len(domains), N, 2))
 
 mask_circ = np.zeros((len(domains), N), dtype = bool)
 mask_poly = np.zeros((len(domains), N), dtype = bool)
+
+if not os.path.exists(fileout):
+    os.makedirs(fileout)
 
 #iterate over domains
 for k in range(len(domains)):
@@ -75,8 +84,8 @@ for k in range(len(domains)):
         mask_poly[k][points[k, :, 0] > pi/2] = False
         
         out_circ[k, i] = sa.normalized_int(f, points[k], mask_circ[k], domain = domains[k])
-        sigma_out_circ[k, i] = sa.sigma_normalized_int(f, out_circ[k, i], points[k], 
-            domain = domains[k])
+        sigma_out_circ[k, i] = sa.sample_sigma_normalized_int(N_sims, f, points[k], 
+            mask_circ[k], domain = domains[k])[0]
     
 out_circ *= 100
 sigma_out_circ *= 100
@@ -85,28 +94,30 @@ sigma_out_circ *= 100
 #plot f_sky vs r
 name = "f_sky(r)_{}mm_{}".format(int(D), N)
 fig, ax = plt.subplots(figsize = (8, 6))
-ax.set_title("Cold Load $f_{{sky}}$ vs. Detector Location (N = {})".format(N))
+ax.set_title("Cold Load $f_{{sky}}$ vs. Detector Location (CL_D = {}, N = {})".format(int(D), N))
 for i in range(len(domains)):
     ax.plot(rs, out_circ[i], label = "{} sampling".format(domains[i]), color = colors[i])
     ax.fill_between(rs, out_circ[i] - sigma_out_circ[i], out_circ[i] + sigma_out_circ[i],
                     color = colors[i], alpha = 0.5)
+ax.axvline(x = 72, color = "k", linestyle = "--")
 ax.set_ylabel("$f_{sky}$ [%]")
 ax.grid()
 ax.set_xlim(np.min(rs), np.max(rs))
-ax.set_xlabel("Radius (mm)")
+ax.set_xlabel("Radius [mm]")
 plt.legend()
 fig.savefig(fileout + name, bbox_inches = "tight")
 
 #plot sigma vs r
 name = "sigma(f_sky, r)_{}mm_{}".format(int(D), N)
 fig, ax = plt.subplots(figsize = (8, 6))
-ax.set_title(r"$\sigma(f_{{sky}})$ vs. Detector Location (N = {})".format(N))
+ax.set_title(r"$\sigma(f_{{sky}})$ vs. Detector Location (CL_D = {}, N = {})".format(int(D), N))
 for i in range(len(domains)):
     ax.plot(rs, sigma_out_circ[i], label = "{} sampling".format(domains[i]), color = colors[i])
+ax.axvline(x = 72, color = "k", linestyle = "--")
 ax.set_ylabel("$f_{sky}$ [%]")
 ax.grid()
 ax.set_xlim(np.min(rs), np.max(rs))
-ax.set_xlabel("Radius (mm)")
+ax.set_xlabel("Radius [mm]")
 plt.legend()
 fig.savefig(fileout + name, bbox_inches = "tight")
 
@@ -115,17 +126,17 @@ sub_N = int(1e3)
 subset = np.random.choice(N, size = sub_N, replace = False)
 name = "Circle projection_{}mm_{}".format(int(D), sub_N)
 fig, ax = plt.subplots(nrows = len(domains), ncols = 1, figsize = (8, 8))
-fig.suptitle("Planar Projection Check, Circle (N = {})".format(sub_N), fontsize = 16)
+fig.suptitle("Planar Projection Check, Circle (CL_D = {}, N = {})".format(int(D), sub_N), fontsize = 16)
 for i in range(len(domains)):
     subsubset = np.intersect1d(np.where(mask_circ[i])[0], subset)
-    ax[i].scatter(planar_points[i, subsubset, 0], planar_points[i, subsubset, 1],
-    c = colors[i], marker = "o", edgecolors = "k")
+    ax[i].scatter(*planar_points[i, subsubset].T, c = colors[i], marker = "o",
+      edgecolors = "k")
     ax[i].add_patch(patches.PathPatch(circ_path, fill = False, linewidth = 2))
     ax[i].axis("equal")
-    ax[i].set_ylabel("$y$ (mm)")
+    ax[i].set_ylabel("$y$ [mm]")
     ax[i].set_title("Uniform sample over {}".format(domains[i]))
     ax[i].grid()
-ax[-1].set_xlabel("$x$ (mm)")
+ax[-1].set_xlabel("$x$ [mm]")
 fig.savefig(fileout + name, bbox_inches = "tight")
 
 #Z
@@ -136,14 +147,14 @@ fig, ax = plt.subplots(nrows = len(domains), ncols = 1, figsize = (8, 8))
 fig.suptitle("Planar Projection Check, Polygon (N = {})".format(sub_N), fontsize = 16)
 for i in range(len(domains)):
     subsubset = np.intersect1d(np.where(mask_poly[i])[0], subset)
-    ax[i].scatter(planar_points[i, subsubset, 0], planar_points[i, subsubset, 1],
-    c = colors[i], marker = "o", edgecolors = "k")
+    ax[i].scatter(*planar_points[i, subsubset].T, c = colors[i], marker = "o",
+      edgecolors = "k")
     ax[i].add_patch(patches.PathPatch(poly_path, fill = False, linewidth = 2))
     ax[i].axis("equal")
-    ax[i].set_ylabel("$y$ (mm)")
+    ax[i].set_ylabel("$y$ [mm]")
     ax[i].set_title("Uniform sample over {}".format(domains[i]))
     ax[i].grid()
-ax[-1].set_xlabel("$x$ (mm)")
+ax[-1].set_xlabel("$x$ [mm]")
 fig.savefig(fileout + name, bbox_inches = "tight")
 
 #mollweide
@@ -159,3 +170,6 @@ for i in range(len(domains)):
     ax[i].set_title("Uniform sample over {}".format(domains[i]))
     ax[i].grid()
 fig.savefig(fileout + name, bbox_inches = "tight")
+
+end = time.perf_counter()
+print("Runtime = ", end - start)
