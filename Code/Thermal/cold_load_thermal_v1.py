@@ -52,7 +52,7 @@ f = np.array([0.0, 0.2, 0.4, 0.8])
 D = 234.0 / 1e3        #m
 G = G_13SP217(T)
 
-filebase = "../../Figures/Thermal/Load_v2/"
+filebase = "../../../Figures/Thermal/Load_v2/"
 
 #Load Thermal Properties assuming 4x, inch-long 13SP217 Nylon spacers
 fig, ax = plt.subplots(nrows = 2, ncols = 1, sharex = True, figsize = (8, 6))
