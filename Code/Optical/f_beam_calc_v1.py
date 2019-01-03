@@ -41,7 +41,7 @@ regex = "mag\(rEL3X\) \[V\] - Freq='(.+)GHz' Phi='(.+)deg'"
 
 colors = ['b', 'r']
 cmaps = ["Blues", "Reds"]
-fileout = "../../Figures/Optical/Load_v2/f_beam/"
+fileout = "../../../Figures/Optical/Load_v2/f_beam/"
 
 ##
 #data structures
