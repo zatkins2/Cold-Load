@@ -52,7 +52,7 @@ ax[1].grid()
 
 ax[1].set_xlabel("$T$ [K]")
 ax[1].set_xlim(left = 1, right = 25)
-fig.savefig("../../Figures/Thermal/Thermal_Properties", bbox_inches = "tight")
+fig.savefig("../../../Figures/Thermal/Thermal_Properties", bbox_inches = "tight")
 
 #figure 2, tau/t^2 (T) for materials
 fig, ax = plt.subplots(figsize = (8, 6))
@@ -81,7 +81,7 @@ ax.set_xlabel("$T$ [K]")
 ax.set_ylabel(r"$\tau_{settle}/t^2$ [s $\mathregular{mm^{-2}}$]")
 ax.grid()
 
-fig.savefig("../../Figures/Thermal/Thermal_Times_Temp", bbox_inches = "tight")
+fig.savefig("../../../Figures/Thermal/Thermal_Times_Temp", bbox_inches = "tight")
 
 #figure 3, tau(t) at T = 15K for materials
 fig, ax = plt.subplots(figsize = (8, 6))
@@ -109,5 +109,5 @@ ax.set_xlabel("$t$ [mm]")
 ax.set_ylabel(r"$\tau_{settle}$ [s]")
 ax.grid()
 
-fig.savefig("../../Figures/Thermal/Thermal_Times_t", bbox_inches = "tight")  
+fig.savefig("../../../Figures/Thermal/Thermal_Times_t", bbox_inches = "tight")  
     

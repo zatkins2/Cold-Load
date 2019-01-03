@@ -40,7 +40,7 @@ name = "v11_3_mag.csv"
 regex = "mag\(rEL3X\) \[V\] - Freq='(.+)GHz' Phi='(.+)deg'"
 
 colors = ['b', 'r']
-fileout = "../../Figures/Optical/Load_v2/f_sky/"
+fileout = "../../../Figures/Optical/Load_v2/f_sky/"
 
 ##
 #data structures

@@ -22,7 +22,7 @@ filein = "../../Beams/"
 name = "v11_3_mag.csv"
 regex = "mag\(rEL3X\) \[V\] - Freq='(.+)GHz' Phi='(.+)deg'"
 
-fileout = "../../Figures/Optical/Load_v2/f_beam/"
+fileout = "../../../Figures/Optical/Load_v2/f_beam/"
 ##
 beams = sa.load_beams(filein, name, regex)
 if not os.path.exists(fileout):
