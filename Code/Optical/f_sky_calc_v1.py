@@ -5,6 +5,8 @@ Created on Mon Dec 17 22:38:27 2018
 @author: zatkins
 """
 
+import os
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.path as path
@@ -23,6 +25,7 @@ H = 45.0                     #detector-load normal distance in mm
 
 #define parameters
 N = int(1e5)
+N_sims = 100
 domains = ["omega", "theta"]
 
 freq, phi = ["150", "0"]
@@ -52,6 +55,9 @@ planar_points = np.zeros((len(domains), N, 2))
 mask_circ = np.zeros((len(domains), N), dtype = bool)
 mask_poly = np.zeros((len(domains), N), dtype = bool)
 
+if not os.path.exists(fileout):
+    os.makedirs(fileout)
+
 #iterate over domains
 for k in range(len(domains)):
     for i in range(len(rs)):
@@ -75,8 +81,8 @@ for k in range(len(domains)):
         mask_poly[k][points[k, :, 0] > pi/2] = False
         
         out_circ[k, i] = sa.normalized_int(f, points[k], mask_circ[k], domain = domains[k])
-        sigma_out_circ[k, i] = sa.sigma_normalized_int(f, out_circ[k, i], points[k], 
-            domain = domains[k])
+        sigma_out_circ[k, i] = sa.sample_sigma_normalized_int(N_sims, f, points[k], 
+            mask_circ[k], domain = domains[k])[0]
     
 out_circ *= 100
 sigma_out_circ *= 100
@@ -118,8 +124,8 @@ fig, ax = plt.subplots(nrows = len(domains), ncols = 1, figsize = (8, 8))
 fig.suptitle("Planar Projection Check, Circle (N = {})".format(sub_N), fontsize = 16)
 for i in range(len(domains)):
     subsubset = np.intersect1d(np.where(mask_circ[i])[0], subset)
-    ax[i].scatter(planar_points[i, subsubset, 0], planar_points[i, subsubset, 1],
-    c = colors[i], marker = "o", edgecolors = "k")
+    ax[i].scatter(*planar_points[i, subsubset].T, c = colors[i], marker = "o",
+      edgecolors = "k")
     ax[i].add_patch(patches.PathPatch(circ_path, fill = False, linewidth = 2))
     ax[i].axis("equal")
     ax[i].set_ylabel("$y$ (mm)")
@@ -136,8 +142,8 @@ fig, ax = plt.subplots(nrows = len(domains), ncols = 1, figsize = (8, 8))
 fig.suptitle("Planar Projection Check, Polygon (N = {})".format(sub_N), fontsize = 16)
 for i in range(len(domains)):
     subsubset = np.intersect1d(np.where(mask_poly[i])[0], subset)
-    ax[i].scatter(planar_points[i, subsubset, 0], planar_points[i, subsubset, 1],
-    c = colors[i], marker = "o", edgecolors = "k")
+    ax[i].scatter(*planar_points[i, subsubset].T, c = colors[i], marker = "o",
+      edgecolors = "k")
     ax[i].add_patch(patches.PathPatch(poly_path, fill = False, linewidth = 2))
     ax[i].axis("equal")
     ax[i].set_ylabel("$y$ (mm)")
