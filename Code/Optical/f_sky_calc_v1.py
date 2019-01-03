@@ -94,7 +94,7 @@ sigma_out_circ *= 100
 #plot f_sky vs r
 name = "f_sky(r)_{}mm_{}".format(int(D), N)
 fig, ax = plt.subplots(figsize = (8, 6))
-ax.set_title("Cold Load $f_{{sky}}$ vs. Detector Location (N = {})".format(N))
+ax.set_title("Cold Load $f_{{sky}}$ vs. Detector Location (CL_D = {}, N = {})".format(int(D), N))
 for i in range(len(domains)):
     ax.plot(rs, out_circ[i], label = "{} sampling".format(domains[i]), color = colors[i])
     ax.fill_between(rs, out_circ[i] - sigma_out_circ[i], out_circ[i] + sigma_out_circ[i],
@@ -103,21 +103,21 @@ ax.axvline(x = 72, color = "k", linestyle = "--")
 ax.set_ylabel("$f_{sky}$ [%]")
 ax.grid()
 ax.set_xlim(np.min(rs), np.max(rs))
-ax.set_xlabel("Radius (mm)")
+ax.set_xlabel("Radius [mm]")
 plt.legend()
 fig.savefig(fileout + name, bbox_inches = "tight")
 
 #plot sigma vs r
 name = "sigma(f_sky, r)_{}mm_{}".format(int(D), N)
 fig, ax = plt.subplots(figsize = (8, 6))
-ax.set_title(r"$\sigma(f_{{sky}})$ vs. Detector Location (N = {})".format(N))
+ax.set_title(r"$\sigma(f_{{sky}})$ vs. Detector Location (CL_D = {}, N = {})".format(int(D), N))
 for i in range(len(domains)):
     ax.plot(rs, sigma_out_circ[i], label = "{} sampling".format(domains[i]), color = colors[i])
 ax.axvline(x = 72, color = "k", linestyle = "--")
 ax.set_ylabel("$f_{sky}$ [%]")
 ax.grid()
 ax.set_xlim(np.min(rs), np.max(rs))
-ax.set_xlabel("Radius (mm)")
+ax.set_xlabel("Radius [mm]")
 plt.legend()
 fig.savefig(fileout + name, bbox_inches = "tight")
 
@@ -126,17 +126,17 @@ sub_N = int(1e3)
 subset = np.random.choice(N, size = sub_N, replace = False)
 name = "Circle projection_{}mm_{}".format(int(D), sub_N)
 fig, ax = plt.subplots(nrows = len(domains), ncols = 1, figsize = (8, 8))
-fig.suptitle("Planar Projection Check, Circle (N = {})".format(sub_N), fontsize = 16)
+fig.suptitle("Planar Projection Check, Circle (CL_D = {}, N = {})".format(int(D), sub_N), fontsize = 16)
 for i in range(len(domains)):
     subsubset = np.intersect1d(np.where(mask_circ[i])[0], subset)
     ax[i].scatter(*planar_points[i, subsubset].T, c = colors[i], marker = "o",
       edgecolors = "k")
     ax[i].add_patch(patches.PathPatch(circ_path, fill = False, linewidth = 2))
     ax[i].axis("equal")
-    ax[i].set_ylabel("$y$ (mm)")
+    ax[i].set_ylabel("$y$ [mm]")
     ax[i].set_title("Uniform sample over {}".format(domains[i]))
     ax[i].grid()
-ax[-1].set_xlabel("$x$ (mm)")
+ax[-1].set_xlabel("$x$ [mm]")
 fig.savefig(fileout + name, bbox_inches = "tight")
 
 #Z
@@ -151,10 +151,10 @@ for i in range(len(domains)):
       edgecolors = "k")
     ax[i].add_patch(patches.PathPatch(poly_path, fill = False, linewidth = 2))
     ax[i].axis("equal")
-    ax[i].set_ylabel("$y$ (mm)")
+    ax[i].set_ylabel("$y$ [mm]")
     ax[i].set_title("Uniform sample over {}".format(domains[i]))
     ax[i].grid()
-ax[-1].set_xlabel("$x$ (mm)")
+ax[-1].set_xlabel("$x$ [mm]")
 fig.savefig(fileout + name, bbox_inches = "tight")
 
 #mollweide
