@@ -27,8 +27,8 @@ max_r = 100.0                #radii in mm
 H = 45.0                     #detector-load normal distance in mm
 
 #define parameters
-N = int(1e5)
-N_sims = 100
+N = int(1e6)
+N_sims = int(1e3)
 domains = ["omega", "theta"]
 
 freq, phi = ["150", "0"]
@@ -47,10 +47,9 @@ fileout = "../../Figures/Optical/Load_v2/f_beam/"
 #data structures
 beam = {k: v**2 for k, v in sa.load_beams(filein, name, regex)[freq][phi].items()}
 
-rs = np.linspace(0, max_r, int(max_r + 1))
+rs = np.linspace(0, max_r, 25)
 
 out_circ = np.zeros((len(domains), len(rs)))
-p = np.zeros((len(domains), len(rs)))
 sigma_out_circ = np.zeros((len(domains), len(rs)))
 
 out_poly = np.zeros((len(domains), len(rs)))
@@ -89,9 +88,8 @@ for k in range(len(domains)):
         
         out_circ[k, i] = sa.normalized_int(f, points[k], mask_circ[k], domain = domains[k],
             f_kwargs = {"beam": beam})
-        p[k,  i] = sa.normalized_int(sa.f_I, points[k], mask_circ[k], domain = domains[k])
-        sigma_out_circ[k, i] = sa.sigma_normalized_int(f, p[k, i], points[k], 
-            domain = domains[k], f_kwargs = {"beam": beam})
+        sigma_out_circ[k, i] = sa.sample_sigma_normalized_int(N_sims, f, points[k],
+            mask_circ[k], domain = domains[k], f_kwargs = {"beam": beam})[0]
     
 out_circ *= 100
 sigma_out_circ *= 100
@@ -105,6 +103,7 @@ for i in range(len(domains)):
     ax.plot(rs, out_circ[i], label = "{} sampling".format(domains[i]), color = colors[i])
     ax.fill_between(rs, out_circ[i] - sigma_out_circ[i], out_circ[i] + sigma_out_circ[i],
                     color = colors[i], alpha = 0.5)
+ax.axvline(x = 72, color = "k", linestyle = "--")
 ax.set_ylabel("$f_{beam}$ [%]")
 ax.grid()
 ax.set_xlim(np.min(rs), np.max(rs))
@@ -118,6 +117,7 @@ fig, ax = plt.subplots(figsize = (8, 6))
 ax.set_title(r"$\sigma(f_{{beam}})$ vs. Detector Location (N = {})".format(N))
 for i in range(len(domains)):
     ax.plot(rs, sigma_out_circ[i], label = "{} sampling".format(domains[i]), color = colors[i])
+ax.axvline(x = 72, color = "k", linestyle = "--")
 ax.set_ylabel("$f_{beam}$ [%]")
 ax.grid()
 ax.set_xlim(np.min(rs), np.max(rs))
@@ -171,4 +171,4 @@ ax[-1].set_xlabel("$x$ (mm)")
 fig.savefig(fileout + name, bbox_inches = "tight")
 
 end = time.perf_counter()
-print(end - start)
+print("Runtime = ", end - start)

@@ -53,7 +53,7 @@ def sample_sigma_normalized_int(N_sims, f, points, mask, domain = "omega", f_kwa
         out[i] = normalized_int(f, points[i * sub_N : (i + 1) * sub_N],
            mask = mask[i * sub_N : (i + 1) * sub_N], domain = domain, f_kwargs = f_kwargs)
     
-    return (np.std(out, ddof = N_sims - 1) / np.sqrt(N_sims), out)
+    return (np.std(out, ddof = 1) / np.sqrt(N_sims), out)
     
 def load_beams(fpath, fname, header_re):
     out = {}

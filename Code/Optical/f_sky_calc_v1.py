@@ -5,6 +5,9 @@ Created on Mon Dec 17 22:38:27 2018
 @author: zatkins
 """
 
+import time
+start = time.perf_counter()
+
 import os
 
 import numpy as np
@@ -24,8 +27,8 @@ max_r = 100.0                #radii in mm
 H = 45.0                     #detector-load normal distance in mm
 
 #define parameters
-N = int(1e5)
-N_sims = 100
+N = int(1e6)
+N_sims = int(1e3)
 domains = ["omega", "theta"]
 
 freq, phi = ["150", "0"]
@@ -41,7 +44,7 @@ fileout = "../../Figures/Optical/Load_v2/f_sky/"
 
 ##
 #data structures
-rs = np.linspace(0, max_r, int(max_r + 1))
+rs = np.linspace(0, max_r, 25)
 
 out_circ = np.zeros((len(domains), len(rs)))
 sigma_out_circ = np.zeros((len(domains), len(rs)))
@@ -96,6 +99,7 @@ for i in range(len(domains)):
     ax.plot(rs, out_circ[i], label = "{} sampling".format(domains[i]), color = colors[i])
     ax.fill_between(rs, out_circ[i] - sigma_out_circ[i], out_circ[i] + sigma_out_circ[i],
                     color = colors[i], alpha = 0.5)
+ax.axvline(x = 72, color = "k", linestyle = "--")
 ax.set_ylabel("$f_{sky}$ [%]")
 ax.grid()
 ax.set_xlim(np.min(rs), np.max(rs))
@@ -109,6 +113,7 @@ fig, ax = plt.subplots(figsize = (8, 6))
 ax.set_title(r"$\sigma(f_{{sky}})$ vs. Detector Location (N = {})".format(N))
 for i in range(len(domains)):
     ax.plot(rs, sigma_out_circ[i], label = "{} sampling".format(domains[i]), color = colors[i])
+ax.axvline(x = 72, color = "k", linestyle = "--")
 ax.set_ylabel("$f_{sky}$ [%]")
 ax.grid()
 ax.set_xlim(np.min(rs), np.max(rs))
@@ -165,3 +170,6 @@ for i in range(len(domains)):
     ax[i].set_title("Uniform sample over {}".format(domains[i]))
     ax[i].grid()
 fig.savefig(fileout + name, bbox_inches = "tight")
+
+end = time.perf_counter()
+print("Runtime = ", end - start)
