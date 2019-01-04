@@ -116,8 +116,10 @@ for m in materials:
         ax[0].plot(T, m(T, p) * m(T, "rho"), label = "{}_{}v".format(m.__name__, p))
 ax[0].set_title("Volumetric Heat Capacity")
 ax[0].set_ylabel("$C_{v}$ [J $\mathregular{K^{-1}m^{-3}}$]")
-ax[0].ticklabel_format(axis = "y", style = "sci", scilimits = (0, 0))
+ax[0].semilogy()
+#ax[0].ticklabel_format(axis = "y", style = "sci", scilimits = (0, 0))
 ax[0].legend()
+ax[0].grid()
 
 props = ["k"]
 for m in materials:
@@ -125,6 +127,8 @@ for m in materials:
         ax[1].plot(T, m(T, p), label = "{}_{}".format(m.__name__, p))       
 ax[1].set_title("Thermal Conductivity")
 ax[1].set_ylabel("$k$ [W $\mathregular{m^{-1}K^{-1}}$]")
+ax[1].semilogy()
 ax[1].set_xlabel("$T$ [K]")
 ax[1].set_xlim(4, 25)
 ax[1].legend()
+ax[1].grid()

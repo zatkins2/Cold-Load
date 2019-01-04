@@ -94,6 +94,7 @@ for material, (func, name) in sorted(materials.items(), key = lambda elem: elem[
 
 ax.plot(ts * 1e3, mp.mf117(T, "c") * mp.mf117(T, "rho") * ts ** 2 / mp.mf117(T, "k"), "k--", label = "MF 117")     
 
+ax.set_xlim(left = ts[0] * 1e3, right = ts[-1] * 1e3)
 ax.semilogx()
 ax.semilogy()
 
