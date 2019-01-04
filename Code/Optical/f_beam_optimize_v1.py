@@ -18,7 +18,7 @@ from scipy.constants import pi
 import solid_angle as sa
 
 #define input/output
-filein = "../../Beams/"
+filein = "../../../Beams/"
 name = "v11_3_mag.csv"
 regex = "mag\(rEL3X\) \[V\] - Freq='(.+)GHz' Phi='(.+)deg'"
 
@@ -32,7 +32,7 @@ if not os.path.exists(fileout):
 phi = "0"
 freq_set_spacing = 5
 
-D = 234.0
+D = 198.0
 H = 45.0
 
 ##

@@ -21,7 +21,7 @@ import solid_angle as sa
 #define data
 vertices = np.array([[0, 100, 100, 40, 100, 100, 0, 0, 60, 0, 0],
                      [0, 0, 40, 40, 160, 200, 200, 160, 160, 40, 0]]).T
-D = 234.0                    #load diameter in mm
+D = 198.0                    #load diameter in mm
 
 max_r = 100.0                #radii in mm
 H = 45.0                     #detector-load normal distance in mm
@@ -35,7 +35,7 @@ freq, phi = ["150", "0"]
 f = sa.f_beam
 
 #define input/output
-filein = "../../Beams/"
+filein = "../../../Beams/"
 name = "v11_3_mag.csv"
 regex = "mag\(rEL3X\) \[V\] - Freq='(.+)GHz' Phi='(.+)deg'"
 
@@ -152,7 +152,7 @@ fig.savefig(fileout + name, bbox_inches = "tight")
 #Z
 sub_N = int(5e3)
 subset = np.random.choice(N, size = sub_N, replace = False)
-name = "Polygon projection_MF_{}GHz_{}phi_{}mm_{}".format(freq, phi, int(D), sub_N)
+name = "Polygon projection_MF_{}GHz_{}phi_{}".format(freq, phi, sub_N)
 fig, ax = plt.subplots(nrows = len(domains), ncols = 1, figsize = (8, 8))
 fig.suptitle("Planar Projection Check, Polygon (N = {})".format(sub_N), fontsize = 16)
 for i in range(len(domains)):
