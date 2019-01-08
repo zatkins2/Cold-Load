@@ -31,7 +31,7 @@ N = int(1e5)
 N_sims = int(1e2)
 domains = ["omega", "theta"]
 
-freq, phi = ["150", "0"]
+freq, phi = ["150", "both"]
 f = sa.f_beam
 
 #define input/output
@@ -45,7 +45,8 @@ fileout = "../../../Figures/Optical/Load_v2/f_beam/"
 
 ##
 #data structures
-beam = {k: v**2 for k, v in sa.load_beams(filein, name, regex)[freq][phi].items()}
+beams = sa.load_beams(filein, name, regex)
+beam = sa.make_beam(beams, freq, phi)
 
 rs = np.linspace(0, max_r, 25)
 

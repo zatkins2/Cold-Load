@@ -23,16 +23,17 @@ name = "v11_3_mag.csv"
 regex = "mag\(rEL3X\) \[V\] - Freq='(.+)GHz' Phi='(.+)deg'"
 
 fileout = "../../../Figures/Optical/Load_v2/f_beam/"
+
 ##
 beams = sa.load_beams(filein, name, regex)
 if not os.path.exists(fileout):
     os.makedirs(fileout)
     
 #define data
-phi = "0"
+phi = "90"
 freq_set_spacing = 5
 
-D = 198.0
+D = 234.0
 H = 45.0
 
 ##
@@ -72,7 +73,7 @@ for freq in range(len(freqs)):
     planar_points[:, 0] = r * np.cos(points[:, 1])
     planar_points[:, 1] = r * np.sin(points[:, 1])
         
-    beam = {k: v**2 for k, v in beams[freqs_str[freq]][phi].items()}
+    beam = sa.make_beam(beams, freqs_str[freq], phi)
             
     for i in range(len(rs)):
         circ = path.Path.circle(center = (rs[i], 0.0), radius = D/2)
