@@ -73,6 +73,22 @@ def load_beams(fpath, fname, header_re):
                         out[freq][phi][theta] = float(row[col])
     return out
 
+def make_beam(beams, freq, phi):
+    if phi == "both":
+        beam_E = {k: v**2 for k, v in beams[freq]["0"].items()}
+        beam_H = {k: v**2 for k, v in beams[freq]["90"].items()}
+        beam_out = {}
+        if beam_E.keys() != beam_H.keys():
+            raise ValueError("beam_E keys != beam_H keys")
+            
+        for k in beam_E:
+            beam_out[k] = beam_E[k] + beam_H[k]
+        
+    else:
+        beam_out = {k: v**2 for k, v in beams[freq][phi].items()}
+    return beam_out
+    
+
 def f_beam(theta, phi, beam = None, **kwargs):
     if type(theta) is not np.ndarray:
         theta_deg = np.array([180 / pi * theta])
