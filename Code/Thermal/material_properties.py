@@ -108,7 +108,7 @@ def Nylon(T, prop):
 ##
 T = np.arange(4, 25 + .1, .1)
 materials = [Al_6061_T6, Cu, mf117]
-fig, ax = plt.subplots(nrows = 2, ncols = 1, sharex = True, figsize = (8, 6))
+fig, ax = plt.subplots(nrows = 3, ncols = 1, sharex = True, figsize = (8, 12))
 
 props = ["c"]
 for m in materials:
@@ -132,3 +132,13 @@ ax[1].set_xlabel("$T$ [K]")
 ax[1].set_xlim(4, 25)
 ax[1].legend()
 ax[1].grid()
+
+for m in materials:
+    ax[2].plot(T, m(T, "c") * m(T, "rho") / m(T, "k"), label = "{}_{}".format(m.__name__, "G"))       
+ax[2].set_title("Time Constant")
+ax[2].set_ylabel(r"$\tau$ [s]")
+ax[2].semilogy()
+ax[2].set_xlabel("$T$ [K]")
+ax[2].set_xlim(4, 25)
+ax[2].legend()
+ax[2].grid()
