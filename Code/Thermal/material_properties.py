@@ -134,7 +134,7 @@ ax[1].legend()
 ax[1].grid()
 
 for m in materials:
-    ax[2].plot(T, m(T, "c") * m(T, "rho") / m(T, "k"), label = "{}_{}".format(m.__name__, "G"))       
+    ax[2].plot(T, m(T, "c") * m(T, "rho") / m(T, "k"), label = "{}_{}".format(m.__name__, "t"))       
 ax[2].set_title("Time Constant")
 ax[2].set_ylabel(r"$\tau$ [s]")
 ax[2].semilogy()
