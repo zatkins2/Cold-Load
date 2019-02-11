@@ -21,14 +21,14 @@ import solid_angle as sa
 #define data
 vertices = np.array([[0, 100, 100, 40, 100, 100, 0, 0, 60, 0, 0],
                      [0, 0, 40, 40, 160, 200, 200, 160, 160, 40, 0]]).T
-D = 234.0                    #load diameter in mm
+D = 198.0                    #load diameter in mm
 
 max_r = 100.0                #radii in mm
 H = 45.0                     #detector-load normal distance in mm
 
 #define parameters
-N = int(1e6)
-N_sims = int(1e3)
+N = int(1e5)
+N_sims = int(1e2)
 domains = ["omega", "theta"]
 
 freq, phi = ["150", "0"]

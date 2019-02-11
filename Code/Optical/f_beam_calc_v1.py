@@ -36,8 +36,8 @@ f = sa.f_beam
 
 #define input/output
 filein = "../../../Beams/"
-name = "v11_3_mag.csv"
-regex = "mag\(rEL3X\) \[V\] - Freq='(.+)GHz' Phi='(.+)deg'"
+name = "Realized Gain Plot 1 5p6mm pixel Single Layer AR.csv"
+regex = "RealizedGainTotal \[\] - Freq='(.+)GHz' LensMachineAngle='90' LR='0.48' Phi='(.+)deg'"
 
 colors = ['b', 'r']
 cmaps = ["Blues", "Reds"]
@@ -46,7 +46,7 @@ fileout = "../../../Figures/Optical/Load_v2/f_beam/"
 ##
 #data structures
 beams = sa.load_beams(filein, name, regex)
-beam = sa.make_beam(beams, freq, phi)
+beam = sa.make_beam(beams, freq, phi, mag = False)
 
 rs = np.linspace(0, max_r, 25)
 

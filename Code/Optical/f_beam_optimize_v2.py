@@ -18,7 +18,7 @@ from scipy.constants import pi
 import solid_angle as sa
 
 #define input/output
-det = "MF_L"
+det = "UHF_F"
 
 det_names = {"LF_F": "LF_AdvACT_mag.csv", "MF_F": "v11_3_mag.csv", "UHF_F": "mag_UHF_v2_2.csv",
              "MF_L": "Realized Gain Plot 1 5p6mm pixel Single Layer AR.csv"}
@@ -42,9 +42,9 @@ if not os.path.exists(fileout):
     
 #define data
 phi = "both"
-freq_set_spacing = 1
+freq_set_spacing = 5
 
-D = 234.0
+D = 198.0
 H = 45.0
 
 ##
@@ -57,16 +57,16 @@ N_sims = int(1e2)
 domain = "omega"
 
 max_r = 72
-num_rs = 0
+num_rs = 4
 
 min_D = 180
 max_D = 240
-D_spacing = 10
+num_Ds = 0
 slice_r = 72
 
 ##
 rs = np.linspace(0, max_r, num_rs)
-Ds = np.arange(min_D, max_D + D_spacing, D_spacing)
+Ds = np.linspace(min_D, max_D, num_Ds)
 
 #data structures
 out_r = np.zeros((num_rs, len(freqs)))
@@ -77,6 +77,7 @@ sigma_out_D = np.zeros((len(Ds), len(freqs)))
 
 #simulate
 for freq in range(len(freqs)):
+    print(freqs[freq])
     points = sa.point_sample(N, domain = domain)
     planar_points = np.zeros(points.shape)
     
