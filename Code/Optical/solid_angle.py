@@ -73,11 +73,17 @@ def load_beams(fpath, fname, header_re):
                         out[freq][phi][theta] = float(row[col])
     return out
 
-def make_beam(beams, freq, phi):
+def make_beam(beams, freq, phi, mag = True):
+    beam_out = {}
+    
     if phi == "both":
-        beam_E = {k: v**2 for k, v in beams[freq]["0"].items()}
-        beam_H = {k: v**2 for k, v in beams[freq]["90"].items()}
-        beam_out = {}
+        if mag:
+            beam_E = {k: v**2 for k, v in beams[freq]["0"].items()}
+            beam_H = {k: v**2 for k, v in beams[freq]["90"].items()}
+        else:
+            beam_E = beams[freq]["0"]
+            beam_H = beams[freq]["90"]
+            
         if beam_E.keys() != beam_H.keys():
             raise ValueError("beam_E keys != beam_H keys")
             
@@ -85,7 +91,11 @@ def make_beam(beams, freq, phi):
             beam_out[k] = beam_E[k] + beam_H[k]
         
     else:
-        beam_out = {k: v**2 for k, v in beams[freq][phi].items()}
+        if mag:
+            beam_out = {k: v**2 for k, v in beams[freq][phi].items()}
+        else:
+            beam_out = beams[freq][phi]
+            
     return beam_out
     
 
