@@ -104,31 +104,48 @@ def Nylon(T, prop):
     if prop == "k":
         Q = -2.6135 + 2.3239*q - 4.7586*q**2 + 7.1602*q**3 - 4.9155*q**4 + 1.6324*q**5 - 0.2507*q**6 + 0.0131*q**7
         return 10**Q
+    
+def Manganin(T, prop):
+    q = np.log10(np.array(T))
+    k_coeffs = np.array([-1.124829e+00,  1.389400e+00,  3.331603e-01, -6.333958e-01,
+       -5.728524e-01,  1.213246e+00,  4.618653e-01, -1.193638e+00,
+        1.859476e-02,  5.463064e-01, -1.777981e-01, -7.122556e-02,
+        5.432831e-02, -1.182376e-02,  8.901838e-04])
+    if prop == "k":
+        Q = 0
+        for i in range(len(k_coeffs)):
+            Q += k_coeffs[i] * q**i
+        return 10**Q
+    if prop == "res":
+        return 48e-8
 
-##
-T = np.arange(4, 25 + .1, .1)
-materials = [Al_6061_T6, Cu, mf117]
-fig, ax = plt.subplots(nrows = 2, ncols = 1, sharex = True, figsize = (8, 6))
-
-props = ["c"]
-for m in materials:
-    for p in props:
-        ax[0].plot(T, m(T, p) * m(T, "rho"), label = "{}_{}v".format(m.__name__, p))
-ax[0].set_title("Volumetric Heat Capacity")
-ax[0].set_ylabel("$C_{v}$ [J $\mathregular{K^{-1}m^{-3}}$]")
-ax[0].semilogy()
-#ax[0].ticklabel_format(axis = "y", style = "sci", scilimits = (0, 0))
-ax[0].legend()
-ax[0].grid()
-
-props = ["k"]
-for m in materials:
-    for p in props:
-        ax[1].plot(T, m(T, p), label = "{}_{}".format(m.__name__, p))       
-ax[1].set_title("Thermal Conductivity")
-ax[1].set_ylabel("$k$ [W $\mathregular{m^{-1}K^{-1}}$]")
-ax[1].semilogy()
-ax[1].set_xlabel("$T$ [K]")
-ax[1].set_xlim(4, 25)
-ax[1].legend()
-ax[1].grid()
+###
+        
+if __name__ == "__main__":    
+        
+    T = np.arange(4, 50 + .1, .1)
+    materials = [Al_6061_T6, Cu, mf117]
+    fig, ax = plt.subplots(nrows = 2, ncols = 1, sharex = True, figsize = (8, 6))
+    
+    props = ["c"]
+    for m in materials:
+        for p in props:
+            ax[0].plot(T, m(T, p) * m(T, "rho"), label = "{}_{}v".format(m.__name__, p))
+    ax[0].set_title("Volumetric Heat Capacity")
+    ax[0].set_ylabel("$C_{v}$ [J $\mathregular{K^{-1}m^{-3}}$]")
+    ax[0].semilogy()
+    #ax[0].ticklabel_format(axis = "y", style = "sci", scilimits = (0, 0))
+    ax[0].legend()
+    ax[0].grid()
+    
+    props = ["k"]
+    for m in materials:
+        for p in props:
+            ax[1].plot(T, m(T, p), label = "{}_{}".format(m.__name__, p))       
+    ax[1].set_title("Thermal Conductivity")
+    ax[1].set_ylabel("$k$ [W $\mathregular{m^{-1}K^{-1}}$]")
+    ax[1].semilogy()
+    ax[1].set_xlabel("$T$ [K]")
+    ax[1].set_xlim(4, 25)
+    ax[1].legend()
+    ax[1].grid()
