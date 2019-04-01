@@ -5,6 +5,7 @@ Created on Sun Oct 28 23:54:19 2018
 @author: zatkins
 """
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import material_properties as mp
@@ -20,6 +21,11 @@ ts = ts * 1e-3            #ts in mm
 #define materials
 materials = {"cr110": [mp.cr110, "CR 110"], "cr124": [mp.cr124, "CR 124"], 
 "steelcast": [mp.steelcast, "Steelcast"], "tkram": [mp.tkram, "TK RAM"]}
+
+#define i/o
+fileout = "../../../Figures/Thermal/Absorber/"
+if not os.path.exists(fileout):
+    os.makedirs(fileout)
 
 ##plot
 #figure 1, c(T) and k(T) for materials
@@ -52,6 +58,7 @@ ax[1].grid()
 
 ax[1].set_xlabel("$T$ [K]")
 ax[1].set_xlim(left = 1, right = 25)
+
 fig.savefig("../../../Figures/Thermal/Absorber/Thermal_Properties", bbox_inches = "tight")
 
 #figure 2, tau/t^2 (T) for materials

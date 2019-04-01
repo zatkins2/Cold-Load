@@ -5,6 +5,7 @@ Created on Fri Nov  9 19:15:06 2018
 @author: zatkins
 """
 
+import os
 import numpy as np
 import scipy.constants as spc
 import matplotlib.pyplot as plt
@@ -65,8 +66,10 @@ if __name__ == "__main__":
     G_spacer = G_13SP217(T, L = L)
     
     set_tau = 180       #sec
-    
+
     filebase = "../../../Figures/Thermal/Load_v2/"
+    if not os.path.exists(filebase):
+        os.mkdirs(filebase)
     
     #
     m_dict = {"Cu": mp.Cu, "Al": mp.Al_6061_T6}
