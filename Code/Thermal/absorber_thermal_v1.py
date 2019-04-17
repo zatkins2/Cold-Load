@@ -5,6 +5,7 @@ Created on Sun Oct 28 23:54:19 2018
 @author: zatkins
 """
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import material_properties as mp
@@ -20,6 +21,11 @@ ts = ts * 1e-3            #ts in mm
 #define materials
 materials = {"cr110": [mp.cr110, "CR 110"], "cr124": [mp.cr124, "CR 124"], 
 "steelcast": [mp.steelcast, "Steelcast"], "tkram": [mp.tkram, "TK RAM"]}
+
+#define i/o
+fileout = "../../../Figures/Thermal/Absorber/"
+if not os.path.exists(fileout):
+    os.makedirs(fileout)
 
 ##plot
 #figure 1, c(T) and k(T) for materials
@@ -52,7 +58,8 @@ ax[1].grid()
 
 ax[1].set_xlabel("$T$ [K]")
 ax[1].set_xlim(left = 1, right = 25)
-fig.savefig("../../../Figures/Thermal/Thermal_Properties", bbox_inches = "tight")
+
+fig.savefig("../../../Figures/Thermal/Absorber/Thermal_Properties", bbox_inches = "tight")
 
 #figure 2, tau/t^2 (T) for materials
 fig, ax = plt.subplots(figsize = (8, 6))
@@ -81,7 +88,7 @@ ax.set_xlabel("$T$ [K]")
 ax.set_ylabel(r"$\tau_{settle}/t^2$ [s $\mathregular{mm^{-2}}$]")
 ax.grid()
 
-fig.savefig("../../../Figures/Thermal/Thermal_Times_Temp", bbox_inches = "tight")
+fig.savefig("../../../Figures/Thermal/Absorber/Thermal_Times_Temp", bbox_inches = "tight")
 
 #figure 3, tau(t) at T = 15K for materials
 fig, ax = plt.subplots(figsize = (8, 6))
@@ -110,5 +117,5 @@ ax.set_xlabel("$t$ [mm]")
 ax.set_ylabel(r"$\tau_{settle}$ [s]")
 ax.grid()
 
-fig.savefig("../../../Figures/Thermal/Thermal_Times_t", bbox_inches = "tight")  
+fig.savefig("../../../Figures/Thermal/Absorber/Thermal_Times_t", bbox_inches = "tight")  
     
