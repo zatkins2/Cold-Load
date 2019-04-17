@@ -43,12 +43,23 @@ def G_solver_A(T, L, tau, material = mp.Cu, **kwargs):
     
     return 2 * np.sqrt(A / spc.pi), A
     
-def P_stage(T_c, T_h, A, L, mat): #dimensions in m
-    return A/L * integrate.quad(mat, T_c, T_h, args = ("k"))[0]
+def P_stage(T_c, T_h, A, L, mat, mat_args = (), mat_kwargs = {}): #dimensions in m
+    return A / L * integrate.quad(mat_dummy, T_c, T_h, args = (mat, ("k", mat_args), mat_kwargs))[0]
 
 def Q_stage(T_c, T_h, V, mat):
     return V * mat(T_h, "rho") * integrate.quad(mat, T_c, T_h, args = ("c"))[0]
 
+def res_thermal_integrand(T, mat, mat_args, mat_kwargs):
+    return mat(T, "k", *mat_args, **mat_kwargs) * mat(T, "res", *mat_args, **mat_kwargs)
+
+def mat_dummy(T, mat, mat_args, mat_kwargs):
+    return mat(T, *mat_args, **mat_kwargs)
+
+def res_thermal(T_c, T_h, A, L, mat, mat_args = (), mat_kwargs = {}):
+    return L / A * (integrate.quad(res_thermal_integrand, T_c, T_h, args = (mat, mat_args, 
+        mat_kwargs))[0] / integrate.quad(mat_dummy, T_c, T_h, args = (mat, ("k", mat_args),
+        mat_kwargs))[0])
+    
 ###
 
 if __name__ == "__main__":

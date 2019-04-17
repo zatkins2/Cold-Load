@@ -8,7 +8,7 @@ Created on Sat Nov 10 18:45:39 2018
 import numpy as np
 import matplotlib.pyplot as plt
 
-def cr110(T, prop):
+def cr110(T, prop, *args, **kwargs):
     T = np.array(T)
     if prop == "k":
         return .08 * np.ones(T.size)
@@ -17,7 +17,7 @@ def cr110(T, prop):
     if prop == "rho":
         return 1.6e3
         
-def mf117(T, prop):
+def mf117(T, prop, *args, **kwargs):
     T = np.array(T)
     if prop == "k":
         to_return = np.zeros(T.size)
@@ -30,7 +30,7 @@ def mf117(T, prop):
     if prop == "rho":
         return cr110(T, prop) + (5. / 6) * (cr124(T, prop) - cr110(T, prop))
     
-def cr124(T, prop):
+def cr124(T, prop, *args, **kwargs):
     T = np.array(T)
     if prop == "k":
         to_return = np.zeros(T.size)
@@ -43,7 +43,7 @@ def cr124(T, prop):
     if prop == "rho":
         return 4.6e3
     
-def steelcast(T, prop):
+def steelcast(T, prop, *args, **kwargs):
     T = np.array(T)
     if prop == "k":
         return .0075 * T
@@ -52,7 +52,7 @@ def steelcast(T, prop):
     if prop == "rho":
         return 3.9e3
     
-def tkram(T, prop):  #this is just polypropylene
+def tkram(T, prop, *args, **kwargs):  #this is just polypropylene
     T = np.array(T)
     if prop == "k":
         return .14 * np.ones(T.size)
@@ -61,7 +61,7 @@ def tkram(T, prop):  #this is just polypropylene
     if prop == "rho":
         return .855e3
         
-def Al_6061_T6(T, prop):
+def Al_6061_T6(T, prop, *args, **kwargs):
     q = np.log10(np.array(T))
     if prop == "c":
         Q = 46.6467 - 314.292*q + 866.662*q**2 - 1298.3*q**3 + 1162.27*q**4 - 637.795*q**5 + 210.351*q**6 - 38.3094*q**7 + 2.96344*q**8
@@ -72,8 +72,8 @@ def Al_6061_T6(T, prop):
     if prop == "rho":
         return 2.71e3
         
-def Cu(T, prop, RRR = 50):
-    RRR_array = np.transpose(np.array([[50,100,150,300,500],
+def Cu(T, prop, *args, RRR = None, **kwargs):
+    RRR_k_array = np.transpose(np.array([[50,100,150,300,500],
 [1.8743,2.2154,2.3797,1.357,2.8075],
 [-0.41538,-0.47461,-0.4918,0.3981,-0.54074],
 [-0.6018,-0.88068,-0.98615,2.669,-1.2777],
@@ -83,29 +83,31 @@ def Cu(T, prop, RRR = 50):
 [-0.051276,-0.04831,-0.046897,0.05773,-0.051727],
 [0.0014871,0.001281,0.0011969,0.0002147,0.0012226],
 [0.003723,0.003207,0.0029988,0,0.0030964]]))
-    RRR_dict = dict()
-    for i in range(np.size(RRR_array, 0)):
-        RRR_dict[RRR_array[i, 0]] = RRR_array[i, 1:]
+    RRR_k_dict = dict()
+    for i in range(RRR_k_array.shape[0]):
+        RRR_k_dict[RRR_k_array[i, 0]] = RRR_k_array[i, 1:]
                                     
     if prop == "c":
         q = np.log10(np.array(T))
         Q = -1.91844 - 0.15973*q + 8.61013*q**2 - 18.996*q**3 + 21.9661*q**4 - 12.7328*q**5 + 3.54322*q**6 - 0.3797*q**7
         return 10**Q
     if prop == "k":
-        a, b, c, d, e, f, g, h, i = RRR_dict[RRR]
+        a, b, c, d, e, f, g, h, i = RRR_k_dict[RRR]
         q = np.array(T)
         Q = (a + c*q**0.5 + e*q + g*q**1.5 + i*q**2) / (1 + b*q**0.5 + d*q + f*q**1.5 + h*q**2)
         return 10**Q
     if prop == "rho":
         return 8.96e3
+    if prop == "res":
+        return 1.68e-8
         
-def Nylon(T, prop):
+def Nylon(T, prop, *args, **kwargs):
     q = np.log10(np.array(T))
     if prop == "k":
         Q = -2.6135 + 2.3239*q - 4.7586*q**2 + 7.1602*q**3 - 4.9155*q**4 + 1.6324*q**5 - 0.2507*q**6 + 0.0131*q**7
         return 10**Q
     
-def Manganin(T, prop):
+def Manganin(T, prop, *args, **kwargs):
     q = np.log10(np.array(T))
     k_coeffs = np.array([-1.124829e+00,  1.389400e+00,  3.331603e-01, -6.333958e-01,
        -5.728524e-01,  1.213246e+00,  4.618653e-01, -1.193638e+00,
