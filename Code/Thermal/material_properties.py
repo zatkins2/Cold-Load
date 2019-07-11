@@ -120,7 +120,17 @@ def Manganin(T, prop, *args, **kwargs):
         return 10**Q
     if prop == "res":
         return 48e-8
-
+    
+def SS_304(T, prop, *args, **kwargs):
+    q = np.log10(np.array(T))
+    k_coeffs = np.array([-1.4087,  1.3982,  0.2543, -0.626 ,  0.2334,  0.4256, -0.4658,
+        0.165 , -0.0199])
+    if prop == "k":
+        Q = 0
+        for i in range(len(k_coeffs)):
+            Q += k_coeffs[i] * q**i
+        return 10**Q
+    
 ###
         
 if __name__ == "__main__":    

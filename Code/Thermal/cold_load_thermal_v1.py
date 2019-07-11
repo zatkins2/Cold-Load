@@ -5,12 +5,21 @@ Created on Fri Nov  9 19:15:06 2018
 @author: zatkins
 """
 
+import sys
+mat_props_path = "/Users/zatkins/Desktop/2018-19/SO/Cold Load/Cold-Load/Code"
+if not mat_props_path in sys.path:
+    sys.path.append(mat_props_path)
+
+import Thermal.material_properties as mp
+
 import os
 import numpy as np
 import scipy.constants as spc
 import matplotlib.pyplot as plt
-import material_properties as mp
 import scipy.integrate as integrate
+from scipy.optimize import minimize as minimize
+
+run = True
 
 ##define functions
 def C_load(T, d = 180/1e3, h = 57.15/1e3, f = 0, th = 3.175/1e3, absorber = mp.mf117, 
@@ -43,17 +52,50 @@ def G_solver_A(T, L, tau, material = mp.Cu, **kwargs):
     
     return 2 * np.sqrt(A / spc.pi), A
     
+def mat_dummy(T, mat, mat_args, mat_kwargs):
+    return mat(T, *mat_args, **mat_kwargs)
+
 def P_stage(T_c, T_h, A, L, mat, mat_args = (), mat_kwargs = {}): #dimensions in m
     return A / L * integrate.quad(mat_dummy, T_c, T_h, args = (mat, ("k", mat_args), mat_kwargs))[0]
+
+def T_stage_series(P, T_c_0, A, L, mat, mat_args = (), mat_kwargs = {}): #dimensions in m
+    
+    def target(T_h, P, T_c, A, L, mat, mat_args, mat_kwargs):
+        return (P - P_stage(T_c, T_h, A, L, mat, mat_args = mat_args, mat_kwargs = mat_kwargs)) ** 2
+    
+    if type(A) == int or type(A) == float:
+        A = np.array([A])
+    else:
+        A = np.array(A)
+        
+    if type(L) == int or type(L) == float:
+        L = np.array([L])
+    else:
+        L = np.array(L)
+    
+    if A.shape != L.shape or len(A.shape) != 1:
+        raise ValueError("A and L must be 1-d sequence type if not scalar")
+    
+    n_stages = A.size
+    out = np.full(n_stages, T_c_0, dtype = float)
+    
+    for i in range(n_stages):
+        T_c = out[i - 1]
+        res = minimize(target, 2 * T_c, args = (P, T_c, A[i], L[i], mat, mat_args, mat_kwargs))
+        
+        if res.success:
+            out[i] = res.x[0]
+        else:
+            raise ValueError("minimize failed for P = {}, T_c = {}, A = {}, L = {}, mat = {}, mat_args = {}, mat_kwargs = {}"
+                             .format(P, T_c, A[i], L[i], mat, mat_args, mat_kwargs))
+    
+    return out
 
 def Q_stage(T_c, T_h, V, mat):
     return V * mat(T_h, "rho") * integrate.quad(mat, T_c, T_h, args = ("c"))[0]
 
 def res_thermal_integrand(T, mat, mat_args, mat_kwargs):
     return mat(T, "k", *mat_args, **mat_kwargs) * mat(T, "res", *mat_args, **mat_kwargs)
-
-def mat_dummy(T, mat, mat_args, mat_kwargs):
-    return mat(T, *mat_args, **mat_kwargs)
 
 def res_thermal(T_c, T_h, A, L, mat, mat_args = (), mat_kwargs = {}):
     return L / A * (integrate.quad(res_thermal_integrand, T_c, T_h, args = (mat, mat_args, 
@@ -62,7 +104,7 @@ def res_thermal(T_c, T_h, A, L, mat, mat_args = (), mat_kwargs = {}):
     
 ###
 
-if __name__ == "__main__":
+if __name__ == "__main__" and run:
     
     ##define data
     T = np.arange(4, 25 + .1, .1)
@@ -73,7 +115,7 @@ if __name__ == "__main__":
     L = 25.4 / 1e3      #m
     A = spc.pi * (wire_D / 2)**2
     
-    D = 234.0 / 1e3     #m
+    D = 198.0 / 1e3     #m
     G_spacer = G_13SP217(T, L = L)
     
     set_tau = 180       #sec
