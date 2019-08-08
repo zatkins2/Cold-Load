@@ -1,0 +1,10 @@
+VeriCold data logfile.
+(c) 2010 Oxford Instruments plc.
+To read this file you will need a log file reader from Oxford Instruments.
+
+Log File Version: no version number assigned
+
+Original filename: C:/oxford instruments/logfiles/nobody/log 190613 114041.vcl
+Creation date: 2019-06-13T11:40:41
+Last write access: 2019-06-13T11:40:41
+This is the standard comments block

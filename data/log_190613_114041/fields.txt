@@ -1,0 +1,11 @@
+Time(secs)
+PressureM1Condense(Bar)
+PressureM3Tank(Bar)
+PressureFPSafety(Bar)
+Still (mbar)
+Forepump (mbar)
+Dewar (mbar)
+Input Water Temp
+Output Water Temp
+Helium Temp
+Oil Temp
